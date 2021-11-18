@@ -1,0 +1,138 @@
+<script>
+    function ajax(url,fun){
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", fun);
+        oReq.open("GET", url);
+        oReq.send();
+    }
+    function updateStyles(){
+        let value = Math.random()
+        ajax(`样式/样式集合.json?value=${value}`,function(){
+            window['dust_free_addCssStyle'](this.responseText)
+            alert(`css 已安装，刷新页面查看效果... \n ${this.responseText}`)
+        })
+    }
+    function updateUrl(){
+        let value = Math.random()
+        ajax(`过滤规则/规则集合.html?value=${value}`,function(){
+            window['dust_free_updateRules'](this.responseText)
+            alert(`已更新过滤规则 \n ${this.responseText}`)
+        })
+    }
+    function installExtensionsByJson(){
+        let value = Math.random()
+        ajax(`扩展/无尘/无尘.json?value=${value}`,function(){
+            window['Easy_Browser'].installExtensionsByJson(this.responseText)
+            alert(`已安装扩展 \n ${this.responseText}`)
+        })
+    }
+    function youdaoDict(){
+        window.Easy_Study.addWebDict("有道","https://m.youdao.com/dict?le=eng&q=$$")
+    }
+    function bingDict(){
+        window.Easy_Study.addWebDict("必应","https://cn.bing.com/dict/search?q=$$")
+    }
+    function langWenDict(){
+        window.Easy_Study.addWebDict("朗文","https://www.ldoceonline.com/dictionary/$$")
+    }
+    function ThesaurusDict(){
+        window.Easy_Study.addWebDict("Thesaurus","https://www.thesaurus.com/browse/$$?s=t")
+    }
+    function FreeDictionaryDict(){
+        window.Easy_Study.addWebDict("FreeDictionary","https://www.thefreedictionary.com/$$")
+    }
+    function jianqiaoDict(){
+        window.Easy_Study.addWebDict("剑桥","https://dictionary.cambridge.org/dictionary/english-chinese-simplified/$$")
+    }
+    function weishiDict(){
+        window.Easy_Study.addWebDict("韦氏","https://www.merriam-webster.com/dictionary/$$")
+    }
+    function giteeDict(){
+        window.Easy_Study.addWebDict("空空如也","http://theguitu.gitee.io/forest/")
+    }
+
+    // 更新词根数据
+    function updateWordRoot(){
+        let value = Math.random()
+        ajax(`词典数据/词根.json?value=${value}`,function(){
+            window['Easy_Study_Dict'].updateWordRoot(this.responseText)
+            alert(`已更新词根 \n ${this.responseText}`)
+        })
+    }
+    // 覆盖词根数据
+    function coverWordRoot(){
+
+    }
+</script>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <style>
+            body { padding: 8px; margin: 0;}
+        </style>
+    </head>
+    <body>
+        <h5 style="margin-bottom: 5px;">在线词典</h5>
+        点击可添加<br>
+        <input type="button" value="有道" onclick="youdaoDict()" />
+        <input type="button" value="必应" onclick="bingDict()" />
+        <input type="button" value="朗文" onclick="langWenDict()" />
+        <input type="button" value="Thesaurus" onclick="ThesaurusDict()" />
+        <input type="button" value="FreeDictionary" onclick="FreeDictionaryDict()" />
+        <input type="button" value="剑桥" onclick="jianqiaoDict()" />
+        <input type="button" value="韦氏词典" onclick="weishiDict()" />
+        <input type="button" value="空空如也" onclick="giteeDict()" />
+        <p>
+        <input type="button" value="更新样式" onclick="updateStyles()" />
+        <br>
+        当前的样式包含以下网址，你可以自行添加其他网址的样式<br>
+        有道 必应 朗文 Thesaurus FreeDictionary 剑桥 韦氏
+        <p>
+        <input type="button" value="安装无尘扩展" onclick="installExtensionsByJson()" />
+
+        <p>
+        <input type="button" value="更新拦截规则" onclick="updateUrl()" />
+        <p>
+        <input type="button" value="更新词根" onclick="updateWordRoot()" />
+        <p>
+        你可以使用任何网址用来显示单词的释义，除上面我列出的以外，你还可以使用其他的任意网址<br>
+        将网址中单词部分替换成 $$ 两个美元符号就行了<br>
+        你还可以使用搜索引擎来搜索<br>
+        比如使用必应搜索 welcome 网址栏的地址会显示成<br>
+        https://cn.bing.com/search?q=welcome&form=QBLH&sp=-1&pq=welcome&sc=2-7&qs=n&sk=&cvid=9DD1E3990E2D462CA1EF6E31A5909E3E <br>
+        你只需要去除其他无用的信息，并把 welcome 替换成 $$ 两个美元符号就行了，替换后的地址如下 <br>
+        https://cn.bing.com/search?q=$$ <br>
+        其他所有的网址都是一样的方法<br>
+        你可以添加任何你喜欢的网址用来显示单词<br>
+        在线词典需要手动进行添加，自动安装 CSS 和 更新拦截规则是浏览器扩展提供的功能，词典文件存储的目录浏览器扩展没有权限访问，所以无法添加<br>
+        无尘扩展暴露了3个方法用来添加 CSS 和 过滤规则，你可以在你自己的网站中进行调用<br>
+        window['dust_free_addCssStyle'](value) 添加 CSS    value: CSS 规则，注意，只能是一行，不能有回车，原因是因为我是用 json 文件保存的，并没有为每一个 CSS 规则创建单独的文件，json 文件不能有回车<br>
+        window["dust_free_addRules"](value)    添加过滤规则     value: url 过滤规则，一行一个，回车换行，正则表达式<br>
+        window["dust_free_updateRules"](value)        更新过滤规则     value: url 过滤规则，一行一个，回车换行，正则表达式。特别注意的是，更新规则会用新的规则覆盖掉原有的规则<br>
+        词典是以 txt 文本格式存储在 /sdcard/Android/data/forest.galanthusnivalis.dustfree/files/dictionaries 目录下的 <br>
+        文件名任意，格式，txt 纯文本，一行一个网址，回车分隔<br>
+        文件数量不限<br>
+        使用手机自带的文本编辑软件就可以编辑了<br>
+        如果不会的话，就加我微信或者QQ吧，我教你<br>
+        别问我为什么不内置在软件中，因为所以，自然道理<br>
+        复制，粘贴，很简单的<br>
+        <p>
+        这个页面是放在 gitee上我的个人仓库里面的静态的页面，无法进行动态的更新</br>
+        如果你需要添加新的 CSS 或过滤规则，请联系我，我来给你添加</br>
+        样式直接点击就可以安装了</br>
+        过滤规则就是浏览器加载网页时需要拦截的 url 的规则，直接点击就可以更新了</br>
+        <p>
+        觉得界面很丑吗？</br>
+        将就看吧，你又不会一直盯着这个页面看
+        <p>
+        或者你可以手动添加样式</br>
+        样式文件以 json 格式存储在 /sdcard/Android/data/forest.galanthusnivalis.dustfree/files/browser/extensions/扩展的token(随机)/无尘/样式注入/样式配置.json </br>
+        具体格式，你打开照着写就行了，匹配规则当前版本用的是正则表达式
+        <p>
+        过滤规则以 txt 格式存储在 /sdcard/Android/data/forest.galanthusnivalis.dustfree/files/browser/extensions/扩展的token(随机)/无尘/HTTP拦截/规则.txt </br>
+        当前版本是使用正则表达式进行匹配的，不要太在意性能，又不是给你当浏览器用的
+        一行一条规则，回车分隔
+
+    </body>
+</html>
